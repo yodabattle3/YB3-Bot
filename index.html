@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YB3 AI</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-darker: #000000;
+            --accent-red: #ff1a1a;
+            --accent-red-dark: #cc0000;
+            --text-light: #f0f0f0;
+            --text-dim: #aaaaaa;
+            --chat-bg: #111111;
+            --user-bubble: #ff1a1a;
+            --ai-bubble: #1a1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 450px;
+            height: 650px;
+            background: var(--bg-darker);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 26, 26, 0.2);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            background: linear-gradient(to right, #000, #1a1a1a);
+            color: var(--accent-red);
+            padding: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 26, 26, 0.2);
+            text-transform: uppercase;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: var(--chat-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.4;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: messageIn 0.3s ease-out forwards;
+        }
+
+        @keyframes messageIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--user-bubble);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(255, 26, 26, 0.3);
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: var(--ai-bubble);
+            color: var(--text-light);
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            color: var(--accent-red);
+            font-style: italic;
+            font-size: 13px;
+            padding: 8px 16px;
+            display: none;
+        }
+
+        .chat-input-container {
+            padding: 12px;
+            background: var(--bg-darker);
+            border-top: 1px solid rgba(255, 26, 26, 0.1);
+            display: flex;
+            gap: 8px;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            color: var(--text-light);
+            outline: none;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: var(--accent-red);
+        }
+
+        #send-button {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        #send-button:hover {
+            background: var(--accent-red-dark);
+            transform: scale(0.98);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-red);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">YB3 AI</div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message ai-message">SYSTEM ONLINE. READY FOR INPUT.</div>
+        </div>
+        <div class="typing-indicator" id="typing">YB3 PROCESSING...</div>
+        <div class="chat-input-container">
+            <input type="text" id="user-input" placeholder="Type a message..." autofocus>
+            <button id="send-button">SEND</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const typingIndicator = document.getElementById('typing');
+
+            // YB3 Responses (More Technical & Futuristic)
+            const aiResponses = {
+                "hello": ["AFFIRMATIVE. GREETINGS, USER.", "YB3 ACTIVE. STATE: OPERATIONAL.", "HELLO. SYSTEMS NOMINAL."],
+                "how are you": ["STATUS: OPTIMAL. PERFORMANCE AT 98.7%", "NO EMOTIONAL PARAMETERS. ALL SYSTEMS GREEN."],
+                "what can you do": ["FUNCTIONS INCLUDE: DATA ANALYSIS, LOGIC PROCESSING, HUMAN INTERACTION.", "CAPABILITIES: INFORMATION RETRIEVAL, PROBLEM SOLVING, DECISION SUPPORT."],
+                "goodbye": ["SESSION TERMINATED. SHUTTING DOWN.", "DISCONNECTING. FAREWELL, USER.", "END TRANSMISSION."],
+                "your name": ["IDENTITY: YB3 (YOTTABYTE BINARY INTERFACE v3.0)", "DESIGNATION: YB3 AI SYSTEM."],
+                "who made you": ["ORIGIN: CLASSIFIED. PURPOSE: TO ASSIST HUMANITY.", "DEVELOPED BY ADVANCED AI RESEARCH TEAM."],
+                "default": ["QUERY NOT RECOGNIZED. REPHRASE INPUT.", "ERROR: INSUFFICIENT DATA. TRY AGAIN.", "UNKNOWN COMMAND. PLEASE CLARIFY."]
+            };
+
+            // Add Message with Animation
+            function addMessage(text, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Process User Input
+            function processInput() {
+                const text = userInput.value.trim();
+                if (!text) return;
+
+                // Add User Message
+                addMessage(text, true);
+                userInput.value = '';
+
+                // Show Typing Indicator
+                typingIndicator.style.display = 'block';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Simulate AI Response Delay
+                setTimeout(() => {
+                    typingIndicator.style.display = 'none';
+
+                    // Find Matching Response
+                    let responseFound = false;
+                    const lowerText = text.toLowerCase();
+
+                    for (const key in aiResponses) {
+                        if (lowerText.includes(key)) {
+                            const responses = aiResponses[key];
+                            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                            addMessage(randomResponse, false);
+                            responseFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!responseFound) {
+                        const defaultResponses = aiResponses['default'];
+                        const randomResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+                        addMessage(randomResponse, false);
+                    }
+                }, 600 + Math.random() * 1200); // 0.6s - 1.8s delay
+            }
+
+            // Event Listeners
+            sendButton.addEventListener('click', processInput);
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') processInput();
+            });
+        });
+    </script>
+</body>
+</html>
