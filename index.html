@@ -2,54 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>YB3</title>
+  <title>YB3 - Roblox Chatbot</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #000000;
-      color: #ffffff;
+      color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
-    #chatbox {
-      width: 420px;
-      max-height: 600px;
+
+    .chat-container {
+      width: 100%;
+      max-width: 500px;
+      height: 90vh;
       background: #1a1a1a;
-      padding: 20px;
       border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 15px #ff0000;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #ff0000;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
       overflow-y: auto;
-      box-shadow: 0 0 10px #ff0000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
+
     .message {
-      margin: 10px 0;
-      line-height: 1.5;
-    }
-    .user {
-      color: #ff4444;
-    }
-    .bot {
-      color: #ff0000;
-    }
-    input[type="text"] {
-      width: 75%;
       padding: 10px;
       border-radius: 5px;
+      max-width: 80%;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #b30000;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background: #333;
+      border-left: 4px solid #ff0000;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: #121212;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
       border: none;
+      border-radius: 5px;
       background: #2a2a2a;
       color: white;
     }
+
     button {
       padding: 10px 15px;
+      margin-left: 10px;
       background: #ff0000;
       color: white;
       border: none;
       border-radius: 5px;
-      margin-left: 5px;
       cursor: pointer;
     }
+
     button:hover {
       background: #cc0000;
     }
@@ -57,12 +93,15 @@
 </head>
 <body>
 
-<div>
-  <div id="chatbox">
-    <div class="message bot">🤖 <strong>YB3:</strong> Hello! Ask me anything about Roblox.</div>
+<div class="chat-container">
+  <div class="chat-header">🤖 YB3 - Roblox Assistant</div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="message bot">Hello! I'm YB3. Ask me anything about Roblox!</div>
   </div>
-  <input type="text" id="userInput" placeholder="Type your question...">
-  <button onclick="sendMessage()">Send</button>
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Type your question here..." onkeydown="if(event.key === 'Enter') sendMessage();">
+    <button onclick="sendMessage()">Send</button>
+  </div>
 </div>
 
 <script>
@@ -71,32 +110,31 @@
     const userText = input.value.trim();
     if (!userText) return;
 
-    const chatbox = document.getElementById('chatbox');
-    chatbox.innerHTML += `<div class="message user">🧑 <strong>You:</strong> ${userText}</div>`;
+    const chat = document.getElementById('chatMessages');
+    addMessage(userText, 'user');
     input.value = '';
-    chatbox.scrollTop = chatbox.scrollHeight;
 
-    // Fetch response from OpenAI API
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
-      },
-      body: JSON.stringify({
-        model: "gpt-4",
-        messages: [
-          { role: "system", content: "You are YB3, an expert assistant who knows everything about Roblox." },
-          { role: "user", content: userText }
-        ]
-      })
-    });
+    try {
+      const response = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText })
+      });
 
-    const data = await response.json();
-    const botReply = data.choices[0].message.content;
+      const data = await response.json();
+      addMessage(data.reply || 'Sorry, no response.', 'bot');
+    } catch (err) {
+      addMessage('⚠️ Error contacting AI. Check your server/API key.', 'bot');
+    }
+  }
 
-    chatbox.innerHTML += `<div class="message bot">🤖 <strong>YB3:</strong> ${botReply}</div>`;
-    chatbox.scrollTop = chatbox.scrollHeight;
+  function addMessage(text, sender) {
+    const chat = document.getElementById('chatMessages');
+    const msg = document.createElement('div');
+    msg.className = `message ${sender}`;
+    msg.textContent = text;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
   }
 </script>
 
