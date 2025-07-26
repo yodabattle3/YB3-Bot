@@ -96,7 +96,7 @@
 <div class="chat-container">
   <div class="chat-header">🤖 YB3 - Roblox Assistant</div>
   <div class="chat-messages" id="chatMessages">
-    <div class="message bot">Hello! I'm YB3. Ask me anything about Roblox!</div>
+    <div class="message bot">Hello! I'm YB3 I was developed by YodaBattle3</div>
   </div>
   <div class="chat-input">
     <input type="text" id="userInput" placeholder="Type your question..." onkeydown="if(event.key === 'Enter') sendMessage();">
@@ -132,11 +132,19 @@
       });
 
       const data = await response.json();
-      const reply = data.choices?.[0]?.message?.content?.trim() || "No response.";
-      addMessage(reply, "bot");
+      console.log("OpenAI Response:", data); // 👀 Debug output
+
+      if (data.choices && data.choices.length > 0) {
+        const reply = data.choices[0].message.content.trim();
+        addMessage(reply, "bot");
+      } else if (data.error) {
+        addMessage(`⚠️ OpenAI Error: ${data.error.message}`, "bot");
+      } else {
+        addMessage("⚠️ No reply received from OpenAI.", "bot");
+      }
     } catch (error) {
-      console.error(error);
-      addMessage("⚠️ Error talking to OpenAI. Check your key or connection.", "bot");
+      console.error("Fetch Error:", error);
+      addMessage("⚠️ Network error. Could not contact OpenAI.", "bot");
     }
   }
 
