@@ -1,313 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YB3 AI</title>
-    <style>
-        :root {
-            --bg-dark: #0a0a0a;
-            --bg-darker: #000000;
-            --accent-red: #ff1a1a;
-            --accent-red-dark: #cc0000;
-            --text-light: #f0f0f0;
-            --text-dim: #aaaaaa;
-            --chat-bg: #111111;
-            --user-bubble: #ff1a1a;
-            --ai-bubble: #1a1a1a;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-        }
-
-        body {
-            background: var(--bg-dark);
-            color: var(--text-light);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .chat-container {
-            width: 100%;
-            max-width: 450px;
-            height: 80vh; /* Dynamic height based on viewport */
-            background: var(--bg-darker);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 26, 26, 0.2);
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .chat-header {
-            background: linear-gradient(to right, #000, #1a1a1a);
-            color: var(--accent-red);
-            padding: 12px;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255, 26, 26, 0.2);
-            text-transform: uppercase;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 12px;
-            overflow-y: auto;
-            background: var(--chat-bg);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 18px;
-            line-height: 1.3;
-            font-size: 13px;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: messageIn 0.3s ease-out forwards;
-        }
-
-        @keyframes messageIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background: var(--user-bubble);
-            color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 8px rgba(255, 26, 26, 0.3);
-        }
-
-        .ai-message {
-            align-self: flex-start;
-            background: var(--ai-bubble);
-            color: var(--text-light);
-            border-bottom-left-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .typing-indicator {
-            align-self: flex-start;
-            color: var(--accent-red);
-            font-style: italic;
-            font-size: 12px;
-            padding: 6px 14px;
-            display: none;
-        }
-
-        .chat-input-container {
-            padding: 8px 10px;
-            background: var(--bg-darker);
-            border-top: 1px solid rgba(255, 26, 26, 0.1);
-            display: flex;
-            gap: 8px;
-        }
-
-        #user-input {
-            flex: 1;
-            padding: 10px 14px;
-            background: #1a1a1a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            color: var(--text-light);
-            outline: none;
-            font-size: 13px;
-            transition: border 0.3s;
-        }
-
-        #user-input:focus {
-            border-color: var(--accent-red);
-        }
-
-        #send-button {
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            border-radius: 24px;
-            padding: 0 16px;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s, transform 0.2s;
-        }
-
-        #send-button:hover {
-            background: var(--accent-red-dark);
-            transform: scale(0.98);
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-red);
-            border-radius: 3px;
-        }
-
-        /* Media Queries for Mobile */
-        @media (max-width: 600px) {
-            .chat-container {
-                height: 70vh; /* Adjust height for mobile */
-                max-width: 100%;
-                padding: 10px;
-            }
-
-            .chat-header {
-                font-size: 14px; /* Smaller font on mobile */
-            }
-
-            .chat-messages {
-                padding: 10px;
-            }
-
-            .message {
-                padding: 8px 12px; /* Smaller padding for mobile */
-                font-size: 12px;
-            }
-
-            .chat-input-container {
-                padding: 6px 8px;
-            }
-
-            #user-input {
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-
-            #send-button {
-                padding: 0 12px; /* Smaller button padding */
-                font-size: 12px;
-            }
-
-            .typing-indicator {
-                font-size: 10px;
-                padding: 4px 10px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>YB3</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #chatbox {
+      width: 420px;
+      max-height: 600px;
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px #ff0000;
+    }
+    .message {
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+    .user {
+      color: #ff4444;
+    }
+    .bot {
+      color: #ff0000;
+    }
+    input[type="text"] {
+      width: 75%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background: #2a2a2a;
+      color: white;
+    }
+    button {
+      padding: 10px 15px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #cc0000;
+    }
+  </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">YB3 AI</div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="message ai-message">SYSTEM ONLINE. READY FOR INPUT.</div>
-        </div>
-        <div class="typing-indicator" id="typing">YB3 PROCESSING...</div>
-        <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type a message..." autofocus>
-            <button id="send-button">SEND</button>
-        </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatMessages = document.getElementById('chat-messages');
-            const userInput = document.getElementById('user-input');
-            const sendButton = document.getElementById('send-button');
-            const typingIndicator = document.getElementById('typing');
+<div>
+  <div id="chatbox">
+    <div class="message bot">🤖 <strong>YB3:</strong> Hello! Ask me anything about Roblox.</div>
+  </div>
+  <input type="text" id="userInput" placeholder="Type your question...">
+  <button onclick="sendMessage()">Send</button>
+</div>
 
-            // YB3 Responses (More Technical & Futuristic)
-            const aiResponses = {
-                "hello": ["AFFIRMATIVE. GREETINGS, USER.", "YB3 ACTIVE. STATE: OPERATIONAL.", "HELLO. SYSTEMS NOMINAL."],
-                "how are you": ["STATUS: OPTIMAL. PERFORMANCE AT 98.7%", "NO EMOTIONAL PARAMETERS. ALL SYSTEMS GREEN."],
-                "what can you do": ["FUNCTIONS INCLUDE: DATA ANALYSIS, LOGIC PROCESSING, HUMAN INTERACTION.", "CAPABILITIES: INFORMATION RETRIEVAL, PROBLEM SOLVING, DECISION SUPPORT."],
-                "goodbye": ["SESSION TERMINATED. SHUTTING DOWN.", "DISCONNECTING. FAREWELL, USER.", "END TRANSMISSION."],
-                "your name": ["IDENTITY: YB3 (YOTTABYTE BINARY INTERFACE v3.0)", "DESIGNATION: YB3 AI SYSTEM."],
-                "who made you": ["ORIGIN: CLASSIFIED. PURPOSE: TO ASSIST HUMANITY.", "DEVELOPED BY ADVANCED AI RESEARCH TEAM."],
-                "default": ["QUERY NOT RECOGNIZED. REPHRASE INPUT.", "ERROR: INSUFFICIENT DATA. TRY AGAIN.", "UNKNOWN COMMAND. PLEASE CLARIFY."]
-            };
+<script>
+  async function sendMessage() {
+    const input = document.getElementById('userInput');
+    const userText = input.value.trim();
+    if (!userText) return;
 
-            // Add Message with Animation
-            function addMessage(text, isUser) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
-                messageDiv.textContent = text;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+    const chatbox = document.getElementById('chatbox');
+    chatbox.innerHTML += `<div class="message user">🧑 <strong>You:</strong> ${userText}</div>`;
+    input.value = '';
+    chatbox.scrollTop = chatbox.scrollHeight;
 
-            // Process User Input
-            function processInput() {
-                const text = userInput.value.trim();
-                if (!text) return;
+    // Fetch response from OpenAI API
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer YOUR_OPENAI_API_KEY"
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: "You are YB3, an expert assistant who knows everything about Roblox." },
+          { role: "user", content: userText }
+        ]
+      })
+    });
 
-                // Add User Message
-                addMessage(text, true);
-                userInput.value = '';
+    const data = await response.json();
+    const botReply = data.choices[0].message.content;
 
-                // Show Typing Indicator
-                typingIndicator.style.display = 'block';
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatbox.innerHTML += `<div class="message bot">🤖 <strong>YB3:</strong> ${botReply}</div>`;
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+</script>
 
-                // Simulate AI Response Delay
-                setTimeout(() => {
-                    typingIndicator.style.display = 'none';
-
-                    // Find Matching Response
-                    let responseFound = false;
-                    const lowerText = text.toLowerCase();
-
-                    for (const key in aiResponses) {
-                        if (lowerText.includes(key)) {
-                            const responses = aiResponses[key];
-                            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                            addMessage(randomResponse, false);
-                            responseFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!responseFound) {
-                        const defaultResponses = aiResponses['default'];
-                        const randomResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-                        addMessage(randomResponse, false);
-                    }
-                }, 600 + Math.random() * 1200); // 0.6s - 1.8s delay
-            }
-
-            // Event Listeners
-            sendButton.addEventListener('click', processInput);
-            userInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') processInput();
-            });
-        });
-    </script>
 </body>
 </html>
