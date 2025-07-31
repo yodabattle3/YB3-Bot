@@ -30,7 +30,7 @@ async function getAIResponse(prompt) {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://YB3.AI",
+        "HTTP-Referer": "https://yodabattle3.github.io/YB3-Bot/",
         "X-Title": "YB3_AI_HTML"
       },
       body: JSON.stringify({
