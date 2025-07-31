@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YB3 AI | Chat Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    🤖 YB3 AI - ChatGPT Assistant
+    <button id="toggleTheme">Toggle Theme</button>
+  </header>
+  <div id="chatbox"></div>
+  <div id="inputBar">
+    <input type="text" id="userInput" placeholder="Ask anything about Roblox, scripting, or life...">
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="startVoice()">🎤</button>
+  </div>
+  <div id="presetButtons">
+    <button onclick="usePreset('Explain this Roblox Lua script:')">Explain Code</button>
+    <button onclick="usePreset('Fix this Roblox error:')">Fix Error</button>
+    <button onclick="usePreset('Give me a random tip about scripting in Roblox.')">Random Tip</button>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
